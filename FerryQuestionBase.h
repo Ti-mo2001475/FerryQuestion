@@ -1,6 +1,6 @@
 #ifndef FQ_BASE
 #define FQ_BASE
-#endif // !1
+#endif 
 
 typedef unsigned int u32;
 typedef unsigned char u8;
@@ -71,6 +71,13 @@ const int TIME_CROSSRIVER = 5;
 const Time START = Time(6, 0), END = Time(18, 0);
 
 template<typename T>
+void swap(T*,T*);
+template<typename T>
+void swap(T&,T&);
+void qsort(u64*, int, int);
+
+
+template<typename T>
 bool LinkedQueue<T>::empty() {
 	if (this->front == nullptr) return true;
 	return false;
@@ -106,6 +113,42 @@ void LinkedQueue<T>::push(T Val) {
 		this->rear = this->rear->pre;
 	}
 	size++;
+}
+
+template<typename T>
+void swap(T* src,T* dest) {
+	T temp = *src;
+	*src = *dest;
+	*dest = temp;
+}
+
+template<typename T>
+void swap(T& src, T& dest) {
+	T temp = src;
+	src = dest;
+	dest = temp;
+}
+
+void qsort(u64* tar, int start, int end) {
+	if (start >= end) return;
+	if (start - end == 1) {
+		if (tar[start] > tar[end]) swap(tar + start, tar + end);
+		return;
+	}
+	int p = tar[(start + end) / 2];
+	int l = start, r = end;
+	while (l < r) {
+		while (tar[l] < p) l++;
+		while (tar[r] > p) r--;
+		if (l >= r) break;
+		swap(tar + l, tar + r);
+		if (tar[l] == tar[r]) {
+			l++;
+		}
+	}
+	if (l <= r) swap(l, r);
+	qsort(tar, start, r - 1);
+	qsort(tar, r + 1, end);
 }
 
 
