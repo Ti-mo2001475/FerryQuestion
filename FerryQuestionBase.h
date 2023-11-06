@@ -1,6 +1,9 @@
+
 #ifndef FQ_BASE
 #define FQ_BASE
 #endif 
+
+#include <fstream>
 
 typedef unsigned int u32;
 typedef unsigned char u8;
@@ -8,6 +11,31 @@ typedef unsigned short u16;
 typedef unsigned long long u64;
 
 enum VehicleType {TRUCK,BUS};
+
+struct Logger {
+	std::ofstream fout;
+	bool doDebug;
+	Logger(std::ofstream stream);
+	void enableDebug() {
+		doDebug = true;
+
+	}
+	void disableDebug() {
+		doDebug = false;
+
+	}
+	void debug(char* msg) {
+		if (doDebug) {
+			fout << "[debug]:" << msg << std::endl;
+		}
+	}
+	void info(char* msg){
+		fout << "[info]:" << msg << std::endl;
+	}
+	void error(char* msg) {
+		fout << "[error]:" << msg << std::endl;
+	}
+};
 
 struct Vehicle {
 	u64 id;
@@ -69,6 +97,7 @@ const int CAPACITY = 20;
 const int LIMIT_COMMON = 20, LIMIT_BUSY = 10;
 const int TIME_CROSSRIVER = 5;
 const Time START = Time(6, 0), END = Time(18, 0);
+const Logger logger = Logger(std::ofstream("latest.log"));
 
 template<typename T>
 void swap(T*,T*);
@@ -150,6 +179,26 @@ void qsort(u64* tar, int start, int end) {
 	qsort(tar, start, r - 1);
 	qsort(tar, r + 1, end);
 }
+
+template<typename T>
+int BinarySort(T arr[], int len, T tar) {
+	int top = len - 1, bottom = 0;
+	while (top - bottom > 1) {
+		if (arr[(top + bottom) / 2] > tar) {
+			bottom = (top + bottom) / 2;
+
+		}
+		else {
+			top = (top + bottom) / 2;
+		}
+	}
+
+	if (arr[top] == tar) return top;
+	else if (arr[bottom] == tar) return bottom;
+	else return -1;
+}
+
+
 
 
 
